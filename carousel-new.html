@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,16 +6,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Carousel</title>
+  <title>Tooltip</title>
   <style>
     .container {
       max-width: 800px;
-      margin: 30px auto;
-      border-radius: 4px;
-      box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.3);
-      padding: 16px;
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, .3);
+      border-radius: 6px;
+      margin: 0 auto;
+      padding: 20px;
     }
-
 
     .carousel {
       position: relative;
@@ -25,80 +22,67 @@
       overflow: hidden;
     }
 
-
-    .carousel .panels > a {
+    .carousel .panels>a {
       position: absolute;
       display: flex;
       align-items: center;
       justify-content: center;
+      text-decoration: none;
       width: 100%;
       height: 100%;
-      text-decoration: none;
       z-index: 1;
+      transition: all .3s;
     }
-
-
-    .carousel .panels > a.active {
+    .carousel .panels>a.active {
       z-index: 10;
     }
 
 
-
-
-    .carousel .panels > a:nth-child(even) {
-      background-color: lightskyblue;
+    .carousel .panels>a:nth-child(even) {
+      background: lightskyblue;
     }
 
-
-    .carousel .panels > a:nth-child(odd) {
-      background-color: lightpink;
+    .carousel .panels>a:nth-child(odd) {
+      background: lightpink;
     }
-
 
     .carousel .arrow {
       position: absolute;
-      top: 50%;
       z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       width: 32px;
       height: 32px;
       border: none;
       border-radius: 50%;
-      background: rgba(31,45,61,.11);
-      opacity: 0;
-      transition: all .3s;
+      background: rgba(31, 45, 61, 0.11);
+      top: 50%;
       outline: none;
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: all .3s;
     }
-
 
     .carousel .arrow-pre {
-      left: 10px;
-      transform: translateX(-10px) translateY(-50%);
+      left: 20px;
+      transform: translate(-10px, -50%);
     }
-
-
-    .carousel:hover .arrow-pre {
-      transform: translateX(0) translateY(-50%);
-      opacity: 1;
-    }
-
 
     .carousel .arrow-next {
-      right: 10px;
-      transform: translateX(10px) translateY(-50%);
+      right: 20px;
+      transform: translate(10px, -50%);
     }
 
-
-    .carousel:hover .arrow-next {
-      transform: translateX(0) translateY(-50%);
+    .carousel:hover .arrow-pre {
+      transform: translate(0, -50%);
       opacity: 1;
     }
 
-
-
+    .carousel:hover .arrow-next {
+      transform: translate(0, -50%);
+      opacity: 1;
+    }
 
     .carousel .arrow::before {
       content: '';
@@ -110,11 +94,9 @@
       transform: rotate(-45deg);
     }
 
-
     .carousel .arrow.arrow-next::before {
       transform: rotate(135deg);
     }
-
 
     .carousel .indicators {
       position: absolute;
@@ -127,28 +109,24 @@
       padding: 0;
     }
 
-
-    .carousel .indicators > li {
+    .carousel li {
       display: inline-block;
       padding: 5px 0;
       cursor: pointer;
     }
-    .carousel .indicators > li::before {
+
+    .carousel li::before {
       content: '';
       display: block;
       width: 30px;
       height: 2px;
-      border-radius: 2px;
+      border-radius: 4px;
       background: #c0c4cc;
-      transition: all .3s;
     }
 
-
-    .carousel .indicators > li.active::before{
+    .carousel li.active::before {
       background: #fff;
     }
-
-
   </style>
 </head>
 
@@ -163,17 +141,20 @@
         <option value="zoom">zoom</option>
       </select>
     </div>
+
     <div class="carousel">
       <div class="panels">
-        <a class="active" href="#0">0</a>
-        <a href="#1">1</a>
+        <a class="active" href="#1">1</a>
         <a href="#2">2</a>
         <a href="#3">3</a>
+        <a href="#4">4</a>
       </div>
+
       <div class="arrows">
         <button class="arrow arrow-pre"></button>
         <button class="arrow arrow-next"></button>
       </div>
+
       <ul class="indicators">
         <li class="active"></li>
         <li></li>
@@ -181,8 +162,7 @@
         <li></li>
       </ul>
     </div>
-
-
+  </div>
 
 
   </div>
@@ -192,124 +172,115 @@
 
   <script>
 
-
+    // 点上一页时，展示上一页的页面，展示对应的indicators
+    // 点下一页时，展示下一页的页面，展示对应的indicators
+    // 点indicators时，展示点击的页面，展示对应的indicators
     const css = ($node, cssObj) => Object.assign($node.style, cssObj)
 
 
     const Animation = {
       slide($from, $to, direction) {
+
         $from.style = ''
         $to.style = ''
+
         console.log('slide', arguments)
         css($from, {
           transform: `translateX(0)`,
           zIndex: 10
         })
-
-
         css($to, {
-          transform: `translateX(${direction === 'right'? '-' : ''}100%)`,
+          transform: `translateX(${direction === 'right' ? '-' : ''}100%)`,
           zIndex: 10
         })
 
-
         setTimeout(() => {
           css($from, {
-            transform: `translateX(${direction === 'left'? '-' : ''}100%)`,
-            transition: `all .4s`
+            transform: `translateX(${direction === 'left' ? '-' : ''}100%)`,
+            transiton: `all .4s`
           })
           css($to, {
             transform: `translateX(0)`,
-            transition: `all .4s`
-          })            
+            transiton: `all .4s`
+          })
         })
+
       },
-
-
       fade($from, $to) {
         $from.style = ''
         $to.style = ''
 
-
         css($from, {
           opacity: 1,
           zIndex: 10
         })
-
-
         css($to, {
           opacity: 0,
-          zIndex: 9
+          zIndex: 10
         })
-
 
         setTimeout(() => {
           css($from, {
             opacity: 0,
             zIndex: 10,
-            transition: `all .4s`
+            transiton: `all .4s`
           })
           css($to, {
             opacity: 1,
             zIndex: 9,
-            transition: `all .4s`
-          })            
+            transiton: `all .4s`
+          })
         })
+        
         setTimeout(() => {
           css($from, {
             zIndex: 9
           })
           css($to, {
-            zIndex: 10
-          })  
-        }, 400)
+            zIndex: 10,
+          })
+        },400)
       },
-
-
       zoom($from, $to) {
         $from.style = ''
         $to.style = ''
 
-
         css($from, {
-          transform: `scale(1)`,
+          transform:`scale(1)`,
           opacity: 1,
           zIndex: 10
         })
-
-
         css($to, {
-          transform: `scale(10)`,
+          transform:`scale(10)`,
           opacity: 0,
-          zIndex: 9
+          zIndex: 10
         })
-
 
         setTimeout(() => {
           css($from, {
-            transform: `scale(10)`,
+            transform:`scale(10)`,
             opacity: 0,
             zIndex: 10,
-            transition: `all .4s`
+            transiton: `all .4s`
           })
           css($to, {
+            transform:`scale(1)`,
             opacity: 1,
-            transform: `scale(1)`,
             zIndex: 9,
-            transition: `all .4s`
-          })            
+            transiton: `all .4s`
+          })
         })
+        
         setTimeout(() => {
           css($from, {
             zIndex: 9
           })
           css($to, {
-            zIndex: 10
-          })  
-        }, 400)
+            zIndex: 10,
+          })
+        },400)
       }
     }
-
 
     class Carousel {
       constructor($root, animation) {
@@ -320,11 +291,8 @@
         this.$$panels = $root.querySelectorAll('.panels > a')
         this.animation = animation
 
-
         this.bind()
       }
-
-
       bind() {
         this.$pre.onclick = () => {
           let fromIndex = this.getIndex()
@@ -332,70 +300,55 @@
           this.setPage(fromIndex, toIndex, 'right')
           this.setIndicator(toIndex)
         }
-
-
         this.$next.onclick = () => {
           let fromIndex = this.getIndex()
           let toIndex = this.getNextIndex()
           this.setPage(fromIndex, toIndex, 'left')
           this.setIndicator(toIndex)
         }
-
-
         this.$$indicators.forEach($indicator => $indicator.onclick = (e) => {
           let fromIndex = this.getIndex()
           let toIndex = [...this.$$indicators].indexOf(e.target)
-          this.setIndicator(toIndex)
           let direction = fromIndex > toIndex ? 'right' : 'left'
           this.setPage(fromIndex, toIndex, direction)
+          this.setIndicator(toIndex)
         })
-      }
 
+      }
 
       getIndex() {
         return [...this.$$indicators].indexOf(this.$root.querySelector('.indicators .active'))
       }
-
-
       getPreIndex() {
         return (this.getIndex() - 1 + this.$$indicators.length) % this.$$indicators.length
       }
-
-
       getNextIndex() {
         return (this.getIndex() + 1) % this.$$indicators.length
-      }
 
+      }
 
       setPage(fromIndex, toIndex, direction) {
-        console.log('setPage', arguments)
+        console.log('setPage',arguments)
         this.animation(this.$$panels[fromIndex], this.$$panels[toIndex], direction)
       }
-
 
       setIndicator(index) {
         this.$$indicators.forEach($indicator => $indicator.classList.remove('active'))
         this.$$indicators[index].classList.add('active')
       }
 
-
       setAnimation(animation) {
         this.animation = animation
       }
     }
 
-
     let $carousel = document.querySelector('.carousel')
     let carousel = new Carousel($carousel, Animation.slide)
-
-
 
 
     document.querySelector('#animation-select').onchange = function() {
       carousel.setAnimation(Animation[this.value])
     }
-
-
   </script>
 
 
